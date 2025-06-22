@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://GhoshSoham27-s-workspace-obbunu.us-east-1.xata.sh/db/PixelTape",
+  "codegen": {
+    "output": "src/xata.ts"
+  }
+}
