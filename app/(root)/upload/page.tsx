@@ -31,13 +31,18 @@ const Page = () => {
     setIsSubmitting(true);
     try {
       if(!video.file || !thumbnail.file){
-        setError('Please upload video and thhumbnail');
+        setError('Please upload video and thumbnail');
         return;
       }
       if(!formData.title || formData.description){
         setError('Please fill in all the details');
         return;
       }
+
+      //upload the video to Bunny
+      //upload the thumbnail to DB
+      //Attach thumbnail
+      //Create a new DB entry for the video credentials (urls, data, ...)
     } catch (error) {
       console.log('Error submitting form: ', error);
     } finally {
