@@ -14,7 +14,7 @@ const THUMBNAIL_CDN_URL = BUNNY.CDN_URL;
 const BUNNY_LIBRARY_ID = getEnv("BUNNY_LIBRARY_ID");
 const ACCESS_KEYS = {
     streamAccessKey: getEnv("BUNNY_STREAM_ACCESS_KEY"),
-    storageAccessKey: getEnv("BUNNY_STREAM_ACCESS_KEY"),
+    storageAccessKey: getEnv("BUNNY_STORAGE_ACCESS_KEY"),
 }
 
 //Helper functions
@@ -29,7 +29,7 @@ const revalidatePaths = (paths: string[]) => {
 }
 
 //Server actons
-export const getVideoUploadUrl = withErrorHandling( async () => {
+export const getVideoUploadUrl = withErrorHandling(async () => {
     await getSessionUserId();
     const videoResponse = await apiFetch<BunnyVideoResponse>(
         `${VIDEO_STREAM_BASE_URL}/${BUNNY_LIBRARY_ID}/videos`,
@@ -45,7 +45,7 @@ export const getVideoUploadUrl = withErrorHandling( async () => {
     return {
         videoId: videoResponse.guid,
         uploadUrl,
-        accessKey: ACCESS_KEYS.storageAccessKey
+        accessKey: ACCESS_KEYS.streamAccessKey
     }
 })
 
