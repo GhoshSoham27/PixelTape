@@ -162,11 +162,9 @@ export const getAllVideos = withErrorHandling(async (
 })
 
 export const getVideoById = withErrorHandling(async (videoId: string) => {
-  const [videoRecord] = await buildVideoWithUserQuery().where(
-    eq(videos.videoId, videoId)
-  );
-  return videoRecord;
-});
+    const [videoRecord] = await buildVideoWithUserQuery().where(eq(videos.id, videoId))
+    return videoRecord;
+})
 
 export const getAllVideosByUser = withErrorHandling(
   async (
@@ -190,6 +188,7 @@ export const getAllVideosByUser = withErrorHandling(
       .where(eq(user.id, userIdParameter));
     if (!userInfo) throw new Error("User not found");
 
+        /* eslint-disable @typescript-eslint/no-explicit-any */
     const conditions = [
       eq(videos.userId, userIdParameter),
       !isOwner && eq(videos.visibility, "public"),
@@ -253,36 +252,21 @@ export const getVideoProcessingStatus = withErrorHandling(
   }
 );
 
-
 export const deleteVideo = withErrorHandling(
   async (videoId: string, thumbnailUrl: string) => {
-    // 🔥 Delete from Bunny.net Stream
     await apiFetch(
       `${VIDEO_STREAM_BASE_URL}/${BUNNY_LIBRARY_ID}/videos/${videoId}`,
-      {
-        method: 'DELETE',
-        bunnyType: 'stream',
-      }
+      { method: "DELETE", bunnyType: "stream" }
     );
 
-    // 🔥 Delete thumbnail from Bunny Storage
-    const thumbnailPath = thumbnailUrl.split('thumbnails/')[1];
+    const thumbnailPath = thumbnailUrl.split("thumbnails/")[1];
     await apiFetch(
       `${THUMBNAIL_STORAGE_BASE_URL}/thumbnails/${thumbnailPath}`,
-      {
-        method: 'DELETE',
-        bunnyType: 'storage',
-        expectJson: false,
-      }
+      { method: "DELETE", bunnyType: "storage", expectJson: false }
     );
 
-    // 🔥 Delete from database
     await db.delete(videos).where(eq(videos.videoId, videoId));
-
-    // ✅ Invalidate the homepage and video detail page
-    revalidatePath('/'); // Homepage
-    revalidatePath(`/video/${videoId}`); // Detail page if navigated back
-
+    revalidatePaths(["/", `/video/${videoId}`]);
     return {};
   }
 );
