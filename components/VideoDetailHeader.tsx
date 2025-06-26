@@ -32,16 +32,17 @@ const VideoDetailHeader = ({
   const isOwner = userId === ownerId;
 
   const handleDelete = async () => {
-    try {
-      setIsDeleting(true);
-      await deleteVideo(videoId, thumbnailUrl);
-      router.push("/");
-    } catch (error) {
-      console.error("Error deleting video:", error);
-    } finally {
-      setIsDeleting(false);
-    }
-  };
+  try {
+    setIsDeleting(true);
+    await deleteVideo(videoId, thumbnailUrl);
+    router.push("/");
+    router.refresh(); 
+  } catch (error) {
+    console.error("Error deleting video:", error);
+  } finally {
+    setIsDeleting(false);
+  }
+};
 
   const handleVisibilityChange = async (option: string) => {
     if (option !== visibilityState) {

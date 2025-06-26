@@ -253,6 +253,7 @@ export const getVideoProcessingStatus = withErrorHandling(
   }
 );
 
+
 export const deleteVideo = withErrorHandling(
   async (videoId: string, thumbnailUrl: string) => {
     await apiFetch(
@@ -267,7 +268,9 @@ export const deleteVideo = withErrorHandling(
     );
 
     await db.delete(videos).where(eq(videos.videoId, videoId));
-    revalidatePaths(["/", `/video/${videoId}`]);
+    revalidatePath("/");
+    revalidatePath(`/video/${videoId}`);
+
     return {};
   }
 );
