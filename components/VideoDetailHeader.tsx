@@ -31,11 +31,11 @@ const VideoDetailHeader = ({
   const userId = session?.user.id;
   const isOwner = userId === ownerId;
 
-  const handleDelete = async () => {
+const handleDelete = async () => {
   try {
     setIsDeleting(true);
     await deleteVideo(videoId, thumbnailUrl);
-    router.push("/");
+    router.push('/');
     router.refresh(); 
   } catch (error) {
     console.error("Error deleting video:", error);
@@ -44,7 +44,7 @@ const VideoDetailHeader = ({
   }
 };
 
-  const handleVisibilityChange = async (option: string) => {
+const handleVisibilityChange = async (option: string) => {
     if (option !== visibilityState) {
       setIsUpdating(true);
       try {

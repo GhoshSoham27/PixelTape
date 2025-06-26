@@ -256,20 +256,32 @@ export const getVideoProcessingStatus = withErrorHandling(
 
 export const deleteVideo = withErrorHandling(
   async (videoId: string, thumbnailUrl: string) => {
+    // 🔥 Delete from Bunny.net Stream
     await apiFetch(
       `${VIDEO_STREAM_BASE_URL}/${BUNNY_LIBRARY_ID}/videos/${videoId}`,
-      { method: "DELETE", bunnyType: "stream" }
+      {
+        method: 'DELETE',
+        bunnyType: 'stream',
+      }
     );
 
-    const thumbnailPath = thumbnailUrl.split("thumbnails/")[1];
+    // 🔥 Delete thumbnail from Bunny Storage
+    const thumbnailPath = thumbnailUrl.split('thumbnails/')[1];
     await apiFetch(
       `${THUMBNAIL_STORAGE_BASE_URL}/thumbnails/${thumbnailPath}`,
-      { method: "DELETE", bunnyType: "storage", expectJson: false }
+      {
+        method: 'DELETE',
+        bunnyType: 'storage',
+        expectJson: false,
+      }
     );
 
+    // 🔥 Delete from database
     await db.delete(videos).where(eq(videos.videoId, videoId));
-    revalidatePath("/");
-    revalidatePath(`/video/${videoId}`);
+
+    // ✅ Invalidate the homepage and video detail page
+    revalidatePath('/'); // Homepage
+    revalidatePath(`/video/${videoId}`); // Detail page if navigated back
 
     return {};
   }
